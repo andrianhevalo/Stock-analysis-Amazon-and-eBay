@@ -1,2 +1,5 @@
 # Stock-analysis-Amazon-and-eBay
-This is a technical analysis of two biggest SP500 stocks
+# Welcome to my technical analysis of two stocks!
+For better understanding of the process, go through the code and try ti knit it to html in order to see all details.
+
+
