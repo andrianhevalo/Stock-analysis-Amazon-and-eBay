@@ -1,0 +1,920 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Amazon and Ebay stocks analysis},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Amazon and Ebay stocks analysis}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+A technical analysis of two big stocks - \(\textbf{Amazon and Ebay.}\)\n
+
+\(\textbf{This is final project on Financial Analytics course.}\)\n
+
+The aim of this project is to apply in practise tools for analyzing
+financial data. In this project, we used Random Walk theory for
+simulating prices, calculated stock returns, vizualized stock returns
+and calulated the correlation, found and vizualized moving avarage.
+
+\(\textbf{Part 1.}\)
+
+Installing all packages if needed
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\KeywordTok{require}\NormalTok{(}\StringTok{"quantmod"}\NormalTok{) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\KeywordTok{require}\NormalTok{(}\StringTok{"xts"}\NormalTok{) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\KeywordTok{require}\NormalTok{(}\StringTok{"rvest"}\NormalTok{) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\KeywordTok{require}\NormalTok{(}\StringTok{"stringr"}\NormalTok{) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\KeywordTok{require}\NormalTok{(}\StringTok{"forcats"}\NormalTok{) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\KeywordTok{require}\NormalTok{(}\StringTok{"lubridate"}\NormalTok{) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\KeywordTok{require}\NormalTok{(}\StringTok{"plotly"}\NormalTok{) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\KeywordTok{require}\NormalTok{(}\StringTok{"corrplot"}\NormalTok{) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\KeywordTok{require}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\KeywordTok{require}\NormalTok{(}\StringTok{"PerformanceAnalytics"}\NormalTok{)) \{}
+    \KeywordTok{library}\NormalTok{(quantmod)}
+    \KeywordTok{library}\NormalTok{(xts)}
+    \KeywordTok{library}\NormalTok{(rvest)}
+    \KeywordTok{library}\NormalTok{(stringr)}
+    \KeywordTok{library}\NormalTok{(plotly)}
+    \KeywordTok{library}\NormalTok{(corrplot)}
+    \KeywordTok{library}\NormalTok{(dplyr)}
+    \KeywordTok{library}\NormalTok{(PerformanceAnalytics)}
+    \KeywordTok{library}\NormalTok{(magrittr)}
+    \KeywordTok{library}\NormalTok{(webshot)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: quantmod
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'quantmod' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: xts
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: zoo
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'zoo'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: TTR
+\end{verbatim}
+
+\begin{verbatim}
+## Version 0.4-0 included new data defaults. See ?getSymbols.
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: rvest
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'rvest' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: xml2
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: stringr
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'stringr' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: forcats
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'forcats' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: lubridate
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'lubridate'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:base':
+## 
+##     date
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: plotly
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: ggplot2
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'plotly'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:ggplot2':
+## 
+##     last_plot
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:stats':
+## 
+##     filter
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:graphics':
+## 
+##     layout
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: corrplot
+\end{verbatim}
+
+\begin{verbatim}
+## corrplot 0.84 loaded
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: dplyr
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'dplyr' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:lubridate':
+## 
+##     intersect, setdiff, union
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:xts':
+## 
+##     first, last
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: PerformanceAnalytics
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'PerformanceAnalytics'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:graphics':
+## 
+##     legend
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{webshot}\OperatorTok{::}\KeywordTok{install_phantomjs}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## phantomjs has been installed to /Users/andrianhevalo/Library/Application Support/PhantomJS
+\end{verbatim}
+
+\(\textbf{Part 2.}\)
+
+\(\textbf{Stock overal performance}\)
+
+Amazon's ticket symbol is AMZN and Ebay's is EBAY
+
+\(\textbf{All stock data we loaded from Yahoo Finance!}\)
+
+source: \url{https://finance.yahoo.com}
+
+We applied getSymbols function from quantmod package having three
+arguments (ticket symbol, time taken, source).
+
+In this section we are getting two chart for both AMZN and EBAY. First
+one shows stock's prices, second one is more complicated. It shows the
+Bollinger Band chart, \% Bollinger change, Volume Traded and Moving
+Average Convergence Diverence in 2018 alone. Those charts are widely
+used in technical analysis of stocks, especially in measuring stock's
+volatiliy.
+
+The Volume chart shows how its stocks are traded on the daily.
+
+The chartsare usually used to decide whether to buy/sell a stock.
+
+\(\textbf{If it falls below the line, it is time to sell. If it rises above the line, it is experiencing an upward momentum.}\)
+
+Brief explanation of what head(AMZN/EBAY) gives us:\n
+
+Open is the price of the stock at the beginning of the trading day, high
+is the highest price of the stock on that trading day, low the lowest
+price of the stock on that trading day, and close the price of the stock
+at closing time. Volume indicates how many stocks were traded. Adjusted
+close is the closing price of the stock that adjusts the price of the
+stock for corporate actions.
+
+We coclude that Ebay stock does not worth buying in 2018. Amazon stock
+is was worth buying from May till Oct 2018 (for more details look at
+charts). What happens in 2019? We consider that the trends will stay the
+same.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#start from 2018-01-01 til 2019}
+\NormalTok{start <-}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(}\StringTok{"2018-01-01"}\NormalTok{)}
+\NormalTok{end <-}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(}\StringTok{"2019-10-01"}\NormalTok{)}
+
+\CommentTok{#getting stock data from yahoo}
+\KeywordTok{getSymbols}\NormalTok{(}\StringTok{"EBAY"}\NormalTok{,}\DataTypeTok{from=}\NormalTok{start,}\DataTypeTok{to=}\NormalTok{end, }\DataTypeTok{src =} \StringTok{"yahoo"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'getSymbols' currently uses auto.assign=TRUE by default, but will
+## use auto.assign=FALSE in 0.5-0. You will still be able to use
+## 'loadSymbols' to automatically load data. getOption("getSymbols.env")
+## and getOption("getSymbols.auto.assign") will still be checked for
+## alternate defaults.
+## 
+## This message is shown once per session and may be disabled by setting 
+## options("getSymbols.warning4.0"=FALSE). See ?getSymbols for details.
+\end{verbatim}
+
+\begin{verbatim}
+## [1] "EBAY"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Ebay's prices chart}
+\NormalTok{EBAY}\OperatorTok{%>%}\KeywordTok{Ad}\NormalTok{()}\OperatorTok{%>%}\KeywordTok{chartSeries}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Bollinger Band chart for Ebay}
+\NormalTok{EBAY}\OperatorTok{%>%}\KeywordTok{chartSeries}\NormalTok{(}\DataTypeTok{TA=}\StringTok{'addBBands();addVo();addMACD()'}\NormalTok{,}\DataTypeTok{subset=}\StringTok{'2018'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-2-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#getting stock data from yahoo}
+\KeywordTok{getSymbols}\NormalTok{(}\StringTok{"AMZN"}\NormalTok{,}\DataTypeTok{from=}\NormalTok{start,}\DataTypeTok{to=}\NormalTok{end, }\DataTypeTok{src =} \StringTok{"yahoo"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "AMZN"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Amazon's prices chart}
+\NormalTok{AMZN}\OperatorTok{%>%}\KeywordTok{Ad}\NormalTok{()}\OperatorTok{%>%}\KeywordTok{chartSeries}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-2-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Bollinger Band chart for Amazon}
+\NormalTok{AMZN}\OperatorTok{%>%}\KeywordTok{chartSeries}\NormalTok{(}\DataTypeTok{TA=}\StringTok{'addBBands();addVo();addMACD()'}\NormalTok{,}\DataTypeTok{subset=}\StringTok{'2018'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-2-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#get first few rows}
+\KeywordTok{head}\NormalTok{(AMZN)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            AMZN.Open AMZN.High AMZN.Low AMZN.Close AMZN.Volume
+## 2018-01-02   1172.00   1190.00  1170.51    1189.01     2694500
+## 2018-01-03   1188.30   1205.49  1188.30    1204.20     3108800
+## 2018-01-04   1205.00   1215.87  1204.66    1209.59     3022100
+## 2018-01-05   1217.51   1229.14  1210.00    1229.14     3544700
+## 2018-01-08   1236.00   1253.08  1232.03    1246.87     4279500
+## 2018-01-09   1256.90   1259.33  1241.76    1252.70     3661300
+##            AMZN.Adjusted
+## 2018-01-02       1189.01
+## 2018-01-03       1204.20
+## 2018-01-04       1209.59
+## 2018-01-05       1229.14
+## 2018-01-08       1246.87
+## 2018-01-09       1252.70
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(EBAY)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            EBAY.Open EBAY.High EBAY.Low EBAY.Close EBAY.Volume
+## 2018-01-02     38.17     38.36    37.92      38.06     6997300
+## 2018-01-03     37.99     39.28    37.90      39.22     9134400
+## 2018-01-04     39.42     39.77    38.47      38.57     8958600
+## 2018-01-05     38.85     39.84    38.81      39.69     7290400
+## 2018-01-08     39.55     40.08    39.44      39.80     9714200
+## 2018-01-09     40.10     40.13    39.48      39.53     6215900
+##            EBAY.Adjusted
+## 2018-01-02      37.91821
+## 2018-01-03      39.07389
+## 2018-01-04      38.42631
+## 2018-01-05      39.54214
+## 2018-01-08      39.65173
+## 2018-01-09      39.38273
+\end{verbatim}
+
+Another way of vizualization
+
+Financial data is mostly plotted with a Japanese candlestick plot, so
+named because it was first created by 18th century Japanese rice
+traders. We applied the function candleChart() from quantmod to create
+such a chart. Also, Candlestick chats are widely used in technical
+analysis to make trading decisions.
+
+for more details go here: \url{https://plot.ly/r/candlestick-charts/}
+
+This r code gives us two charts all having two candlesticks - blue and
+red. First one indicates a day where the closing price was higher than
+the open, another - day where the open was higher than the close.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{candleChart}\NormalTok{(AMZN, }\DataTypeTok{up.col =} \StringTok{"blue"}\NormalTok{, }\DataTypeTok{dn.col =} \StringTok{"red"}\NormalTok{, }\DataTypeTok{theme =} \StringTok{"white"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{candleChart}\NormalTok{(EBAY, }\DataTypeTok{up.col =} \StringTok{"blue"}\NormalTok{, }\DataTypeTok{dn.col =} \StringTok{"red"}\NormalTok{, }\DataTypeTok{theme =} \StringTok{"white"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-3-2.pdf}
+
+\(\textbf{Below, we plot AMZN's and EBAY's adjusted close together.}\)
+
+We initialize xts object from quantmod containing stock prices for AMZN
+and EBAY.
+
+Then, we create a plot using zoo method which allows for multiple series
+be ploted on the same plot.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stocks <-}\StringTok{ }\KeywordTok{as.xts}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{AMZN =}\NormalTok{ AMZN[, }\StringTok{"AMZN.Close"}\NormalTok{], }\DataTypeTok{EBAY =}\NormalTok{ EBAY[, }\StringTok{"EBAY.Close"}\NormalTok{]))}
+\KeywordTok{head}\NormalTok{(stocks)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            AMZN.Close EBAY.Close
+## 2018-01-02    1189.01      38.06
+## 2018-01-03    1204.20      39.22
+## 2018-01-04    1209.59      38.57
+## 2018-01-05    1229.14      39.69
+## 2018-01-08    1246.87      39.80
+## 2018-01-09    1252.70      39.53
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{as.zoo}\NormalTok{(stocks[, }\KeywordTok{c}\NormalTok{(}\StringTok{"AMZN.Close"}\NormalTok{)]))}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{new =} \OtherTok{TRUE}\NormalTok{)}
+
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{as.zoo}\NormalTok{(stocks[, }\StringTok{"EBAY.Close"}\NormalTok{]), }\DataTypeTok{screens =} \DecValTok{1}\NormalTok{, }\DataTypeTok{lty =} \DecValTok{3}\NormalTok{, }\DataTypeTok{xaxt =} \StringTok{"n"}\NormalTok{, }\DataTypeTok{yaxt =} \StringTok{"n"}\NormalTok{, }
+    \DataTypeTok{xlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{)}
+
+\KeywordTok{mtext}\NormalTok{(}\StringTok{"Price"}\NormalTok{, }\DataTypeTok{side =} \DecValTok{4}\NormalTok{, }\DataTypeTok{line =} \DecValTok{3}\NormalTok{)}
+
+\CommentTok{#adding legend to plot}
+\KeywordTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\StringTok{"AMZN"}\NormalTok{, }\StringTok{"EBAY"}\NormalTok{), }\DataTypeTok{lty =} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{, }\DataTypeTok{cex =} \FloatTok{0.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\(\textbf{Part 3.}\)
+
+\(\textbf{Visualization of a Correlation Matrix}\)
+
+To successfully purchase a stock, we should take into account
+correlation (the smaller correlation is, the more bigger is rate of
+return).
+
+\(\textbf{A rule of thumb: do not put all your eggs in one basket!}\)
+
+Since, AMZN and EBAY are stocks from different sectrors, therefore the
+correlation is small.
+
+Investing money in stocks from different sectros minimizes the risk.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#merging two data frames together}
+\NormalTok{data<-}\KeywordTok{cbind}\NormalTok{(}\KeywordTok{diff}\NormalTok{(}\KeywordTok{log}\NormalTok{(}\KeywordTok{Cl}\NormalTok{(EBAY))),}\KeywordTok{diff}\NormalTok{(}\KeywordTok{log}\NormalTok{(}\KeywordTok{Cl}\NormalTok{(AMZN))))}
+
+\CommentTok{#getting chart with correlation data}
+\KeywordTok{chart.Correlation}\NormalTok{(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\(\textbf{Amazon and Ebay stocks returns}\)
+
+To do that, we need to use apply function which transforms our data into
+appropriate type. We calculate the returns in certain period:
+\(return_{t, 0} = \frac{price_t}{price_0}\)
+
+The plot shows us the profitability of each stocks. It seen clearly seen
+in the plot that two stocks are not correlated what we've already shown
+in previuos section. Amazon stock is much more profitable than Ebay.
+
+In addition, we could also calculate and vizualize stock changes.
+
+\(change_t = log(price_t) - log(price_{t - 1})\) t - period of time.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#getting stock returns}
+\NormalTok{stock_returns =}\StringTok{ }\KeywordTok{apply}\NormalTok{(stocks, }\DecValTok{1}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(x) \{x }\OperatorTok{/}\StringTok{ }\NormalTok{stocks[}\DecValTok{1}\NormalTok{,]\}) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                            }\NormalTok{t }\OperatorTok{%>%}\StringTok{ }\NormalTok{as.xts}
+
+\CommentTok{#getting stock change using diff function}
+\NormalTok{stock_change =}\StringTok{ }\KeywordTok{diff}\NormalTok{(}\KeywordTok{log}\NormalTok{(stock_returns[, ]))}
+
+\CommentTok{#heading data}
+\KeywordTok{head}\NormalTok{(stock_change)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             AMZN.Close   EBAY.Close
+## 2018-01-02          NA           NA
+## 2018-01-03 0.012694369  0.030022958
+## 2018-01-04 0.004466026 -0.016712074
+## 2018-01-05 0.016033319  0.028624469
+## 2018-01-08 0.014321657  0.002767646
+## 2018-01-09 0.004664776 -0.006807035
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(stock_returns)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            AMZN.Close EBAY.Close
+## 2018-01-02   1.000000   1.000000
+## 2018-01-03   1.012775   1.030478
+## 2018-01-04   1.017308   1.013400
+## 2018-01-05   1.033751   1.042827
+## 2018-01-08   1.048662   1.045717
+## 2018-01-09   1.053566   1.038623
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{as.zoo}\NormalTok{(stock_returns), }\DataTypeTok{screens =} \DecValTok{1}\NormalTok{, }\DataTypeTok{lty =} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Date"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"Return"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Amazon and Ebay stock returns"}\NormalTok{)}
+
+\KeywordTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\StringTok{"AMZN"}\NormalTok{, }\StringTok{"EBAY"}\NormalTok{), }\DataTypeTok{lty =} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{, }\DataTypeTok{cex =} \FloatTok{0.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{as.zoo}\NormalTok{(stock_change), }\DataTypeTok{screens =} \DecValTok{1}\NormalTok{, }\DataTypeTok{lty =} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Date"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"Log Difference"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Amazon and Ebay stock change"}\NormalTok{)}
+
+\KeywordTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\StringTok{"AMZN"}\NormalTok{, }\StringTok{"Ebay"}\NormalTok{), }\DataTypeTok{lty =} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{, }\DataTypeTok{cex =} \FloatTok{0.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-6-2.pdf}
+
+\(\textbf{Moving Avarages}\)
+
+Moving avarages smooth a series and help find trends in stocks. They do
+not predict price direction, but rather define the current direction.
+Most moving averages are based on closing prices.
+
+There two types of Moving avarages - Simple and Exponential. Simple one
+calculates the avarage price over certain periods of time. Exponential -
+reduce the lag by applying more weight to recent prices.
+
+\(MA^q_t = \frac{1}{q}\sum_{i=0}{q - 1}x_{t-i}\)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{start =}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(}\StringTok{"2018-01-01"}\NormalTok{)}
+\KeywordTok{getSymbols}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"AMZN"}\NormalTok{, }\StringTok{"EBAY"}\NormalTok{), }\DataTypeTok{src =} \StringTok{"yahoo"}\NormalTok{, }\DataTypeTok{from =}\NormalTok{ start, }\DataTypeTok{to =}\NormalTok{ end)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "AMZN" "EBAY"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{candleChart}\NormalTok{(AMZN, }\DataTypeTok{up.col =} \StringTok{"black"}\NormalTok{, }\DataTypeTok{dn.col =} \StringTok{"red"}\NormalTok{, }\DataTypeTok{theme =} \StringTok{"white"}\NormalTok{, }\DataTypeTok{subset =} \StringTok{"2018-01-01/"}\NormalTok{, ad)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#adding MA via addSMA from quantmod}
+\KeywordTok{addSMA}\NormalTok{(}\DataTypeTok{n =} \DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-7-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{addEMA}\NormalTok{(}\DataTypeTok{n =} \DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-7-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{candleChart}\NormalTok{(EBAY, }\DataTypeTok{up.col =} \StringTok{"black"}\NormalTok{, }\DataTypeTok{dn.col =} \StringTok{"red"}\NormalTok{, }\DataTypeTok{theme =} \StringTok{"white"}\NormalTok{, }\DataTypeTok{subset =} \StringTok{"2018-01-01/"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-7-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{addSMA}\NormalTok{(}\DataTypeTok{n =} \DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-7-5.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{addEMA}\NormalTok{(}\DataTypeTok{n =} \DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-7-6.pdf}
+
+\(\textbf{Part 6}\)
+
+Logreturns and vizualization of risk vs reward
+
+We applied plotly to create a visualization of each stock's risk vs
+reward.
+
+Risk: standard deviation of log returns.
+
+Reward: mean of log returns.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Loads the company stock using ticker}
+\KeywordTok{getSymbols}\NormalTok{(}\StringTok{"AMZN"}\NormalTok{,}\DataTypeTok{from=}\StringTok{"2008-08-01"}\NormalTok{,}\DataTypeTok{to=}\StringTok{"2018-08-20"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "AMZN"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{getSymbols}\NormalTok{(}\StringTok{"EBAY"}\NormalTok{,}\DataTypeTok{from=}\StringTok{"2008-08-01"}\NormalTok{,}\DataTypeTok{to=}\StringTok{"2018-08-20"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "EBAY"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Stock returns in log}
+\NormalTok{AMZN_log_returns<-AMZN}\OperatorTok{%>%}\KeywordTok{Ad}\NormalTok{()}\OperatorTok{%>%}\KeywordTok{dailyReturn}\NormalTok{(}\DataTypeTok{type=}\StringTok{'log'}\NormalTok{)}
+\NormalTok{EBAY_log_returns<-EBAY}\OperatorTok{%>%}\KeywordTok{Ad}\NormalTok{()}\OperatorTok{%>%}\KeywordTok{dailyReturn}\NormalTok{(}\DataTypeTok{type=}\StringTok{'log'}\NormalTok{)}
+
+\CommentTok{#Mean of log stock returns }
+\NormalTok{AMZN_mean_log<-}\KeywordTok{mean}\NormalTok{(AMZN_log_returns)}
+\NormalTok{EBAY_mean_log<-}\KeywordTok{mean}\NormalTok{(EBAY_log_returns)}
+
+\CommentTok{#standard deviation of log stock returns}
+\NormalTok{AMZN_sd_log<-}\KeywordTok{sd}\NormalTok{(AMZN_log_returns)}
+\NormalTok{EBAY_sd_log<-}\KeywordTok{sd}\NormalTok{(EBAY_log_returns)}
+
+\NormalTok{mean_log<-}\KeywordTok{c}\NormalTok{(AMZN_mean_log,EBAY_mean_log)}
+\NormalTok{sd_log<-}\KeywordTok{c}\NormalTok{(AMZN_sd_log,EBAY_sd_log)}
+
+\CommentTok{#create data frame}
+\NormalTok{graph1<-}\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"AMZN"}\NormalTok{,AMZN_mean_log, AMZN_sd_log), }\KeywordTok{c}\NormalTok{(}\StringTok{"EBAY"}\NormalTok{,EBAY_mean_log,EBAY_sd_log), }\DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{))}
+
+\NormalTok{graph1<-}\KeywordTok{data.frame}\NormalTok{(mean_log, sd_log)}
+\KeywordTok{rownames}\NormalTok{(graph1)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"AMZN"}\NormalTok{,}\StringTok{"EBAY"}\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(graph1)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"AMZN_log_returns"}\NormalTok{, }\StringTok{"EBAY_log_returns"}\NormalTok{)}
+
+\NormalTok{xlab<-}\KeywordTok{list}\NormalTok{(}\DataTypeTok{title=}\StringTok{"Reward"}\NormalTok{)}
+\NormalTok{ylab<-}\KeywordTok{list}\NormalTok{(}\DataTypeTok{title=}\StringTok{"Risk"}\NormalTok{)}
+
+\KeywordTok{plot_ly}\NormalTok{(}\DataTypeTok{x=}\NormalTok{graph1[,}\DecValTok{1}\NormalTok{],}\DataTypeTok{y=}\NormalTok{graph1[,}\DecValTok{2}\NormalTok{],}\DataTypeTok{text=}\KeywordTok{rownames}\NormalTok{(graph1),}\DataTypeTok{type=}\StringTok{'scatter'}\NormalTok{,}\DataTypeTok{mode=}\StringTok{"markers"}\NormalTok{,}\DataTypeTok{marker=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{color=}\KeywordTok{c}\NormalTok{(}\StringTok{"black"}\NormalTok{,}\StringTok{"blue"}\NormalTok{)))}\OperatorTok{%>%}\KeywordTok{layout}\NormalTok{(}\DataTypeTok{title=}\StringTok{"Risk vs Reward"}\NormalTok{,}\DataTypeTok{xaxis=}\NormalTok{xlab,}\DataTypeTok{yaxis=}\NormalTok{ylab)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\(\textbf{Part 7}\)
+
+Random Walk for prices simulation of Amazon stock
+
+The random walk theory suggests that changes in stock prices have the
+same distribution (normal) and are independent of each other, therefore,
+the past movement or trend of a stock price or market cannot be used to
+predict its future movement.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{testsim<-}\KeywordTok{rep}\NormalTok{(}\OtherTok{NA}\NormalTok{,}\DecValTok{500}\NormalTok{)}
+
+\CommentTok{#generate random daily exponent increase rate using AMZN's mean and sd log returns}
+
+\CommentTok{#one year 252 trading days, simulate for 2 years }
+\CommentTok{# 2*252 trading days}
+
+\NormalTok{AMZN_prices<-}\KeywordTok{rep}\NormalTok{(}\OtherTok{NA}\NormalTok{,}\DecValTok{252}\OperatorTok{*}\DecValTok{2}\NormalTok{)}
+
+\CommentTok{#most recent price}
+\NormalTok{AMZN_prices[}\DecValTok{1}\NormalTok{]<-}\KeywordTok{as.numeric}\NormalTok{(AMZN}\OperatorTok{$}\NormalTok{AMZN.Adjusted[}\KeywordTok{length}\NormalTok{(AMZN}\OperatorTok{$}\NormalTok{AMZN.Adjusted),])}
+
+\CommentTok{#start simulating prices}
+
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\DecValTok{500}\NormalTok{)\{}
+  \CommentTok{#generates multivariate normal random variates in the space}
+\NormalTok{  AMZN_prices[i]<-AMZN_prices[i}\OperatorTok{-}\DecValTok{1}\NormalTok{]}\OperatorTok{*}\KeywordTok{exp}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{1}\NormalTok{,AMZN_mean_log,AMZN_sd_log))}
+\NormalTok{\}}
+
+\CommentTok{#creating a frame}
+\NormalTok{random_data<-}\KeywordTok{cbind}\NormalTok{(AMZN_prices,}\DecValTok{1}\OperatorTok{:}\NormalTok{(}\DecValTok{252}\OperatorTok{*}\DecValTok{2}\NormalTok{))}
+\KeywordTok{colnames}\NormalTok{(random_data)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"Price"}\NormalTok{,}\StringTok{"Day"}\NormalTok{)}
+\NormalTok{random_data<-}\KeywordTok{as.data.frame}\NormalTok{(random_data)}
+
+\NormalTok{random_data}\OperatorTok{%>%}\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(Day,Price))}\OperatorTok{+}\KeywordTok{geom_line}\NormalTok{()}\OperatorTok{+}\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title=}\StringTok{"Amazon (AMZN) price simulation for 2 years"}\NormalTok{)}\OperatorTok{+}\KeywordTok{theme_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 4 rows containing missing values (geom_path).
+\end{verbatim}
+
+\includegraphics{financial_analysis_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#ending session}
+\KeywordTok{sessionInfo}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## R version 3.5.1 (2018-07-02)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS  10.14.4
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] PerformanceAnalytics_1.5.2 dplyr_0.8.0.1             
+##  [3] corrplot_0.84              plotly_4.9.0              
+##  [5] ggplot2_3.1.0              lubridate_1.7.4           
+##  [7] forcats_0.4.0              stringr_1.4.0             
+##  [9] rvest_0.3.3                xml2_1.2.0                
+## [11] quantmod_0.4-14            TTR_0.23-4                
+## [13] xts_0.11-2                 zoo_1.8-4                 
+## 
+## loaded via a namespace (and not attached):
+##  [1] tidyselect_0.2.5  purrr_0.2.5       lattice_0.20-35  
+##  [4] colorspace_1.3-2  htmltools_0.3.6   viridisLite_0.3.0
+##  [7] yaml_2.2.0        rlang_0.3.4       pillar_1.3.1     
+## [10] later_0.8.0       glue_1.3.0        withr_2.1.2      
+## [13] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+## [16] htmlwidgets_1.3   evaluate_0.12     labeling_0.3     
+## [19] knitr_1.20        callr_3.1.1       ps_1.3.0         
+## [22] httpuv_1.5.1      crosstalk_1.0.0   curl_3.2         
+## [25] Rcpp_1.0.0        xtable_1.8-3      scales_1.0.0     
+## [28] backports_1.1.2   promises_1.0.1    webshot_0.5.1    
+## [31] jsonlite_1.6      mime_0.6          digest_0.6.18    
+## [34] stringi_1.2.4     processx_3.2.1    shiny_1.3.2      
+## [37] grid_3.5.1        rprojroot_1.3-2   quadprog_1.5-5   
+## [40] tools_3.5.1       magrittr_1.5      lazyeval_0.2.1   
+## [43] tibble_2.1.1      crayon_1.3.4      tidyr_0.8.2      
+## [46] pkgconfig_2.0.2   data.table_1.12.2 assertthat_0.2.0 
+## [49] rmarkdown_1.10    httr_1.4.0        R6_2.3.0         
+## [52] compiler_3.5.1
+\end{verbatim}
+
+\(\textbf{Conclusion:}\) Investing in stock market is not so easy as it
+seems to be. The probability of losing money is high, because many
+investors do not pay attention to risk. But with such tools like Random
+Walk and Moving Avarage chart, we can avoid risk and invest in stock
+successfully. Only being familiar with financial analysis rools will
+help us make right decisions.
+
+References:
+\url{https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:moving_averages}
+\url{https://thebusinessprofessor.com/knowledge-base/random-walk-theory-stock-market-explained/}
+\url{https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html}
+\url{https://towardsdatascience.com/analyzing-stocks-using-r-550be7f5f20d}
+\url{https://ntguardian.wordpress.com/2017/04/03/introduction-stock-market-data-r-2/}
+\url{https://ntguardian.wordpress.com/2017/03/27/introduction-stock-market-data-r-1/}
+
+
+\end{document}

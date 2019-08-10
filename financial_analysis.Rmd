@@ -1,0 +1,304 @@
+---
+title: "Amazon and Ebay stocks analysis"
+output:
+  pdf_document: default
+  html_notebook: default
+  html_document:
+    df_print: paged
+contributed by: Andrian Hevalo, Yaroslav Halonko
+---
+A technical analysis of two big stocks - $\textbf{Amazon and Ebay.}$\n
+
+$\textbf{This is final project on Financial Analytics course.}$\n
+
+The aim of this project is to apply in practise tools for analyzing financial data. In this project, we used Random Walk theory for simulating prices, calculated stock returns, vizualized stock returns and calulated the correlation, found and vizualized moving avarage.
+
+$\textbf{Part 1.}$
+
+Installing all packages if needed
+```{r}
+if (!require("quantmod") & !require("xts") & !require("rvest") & !require("stringr") & !require("forcats") & !require("lubridate") & !require("plotly") & !require("corrplot") & !require("dplyr") & !require("PerformanceAnalytics")) {
+    library(quantmod)
+    library(xts)
+    library(rvest)
+    library(stringr)
+    library(plotly)
+    library(corrplot)
+    library(dplyr)
+    library(PerformanceAnalytics)
+    library(magrittr)
+    library(webshot)
+}
+webshot::install_phantomjs()
+```
+
+$\textbf{Part 2.}$
+
+$\textbf{Stock overal performance}$
+
+Amazon's ticket symbol is AMZN and Ebay's is EBAY
+
+$\textbf{All stock data we loaded from Yahoo Finance!}$
+
+source: https://finance.yahoo.com
+
+We applied getSymbols function from quantmod package having three arguments (ticket symbol, time taken, source).
+
+In this section we are getting two chart for both AMZN and EBAY. First one shows stock's prices, second one is more complicated. It shows the Bollinger Band chart, % Bollinger change, Volume Traded and Moving Average Convergence Diverence in 2018 alone. Those charts are widely used in technical analysis of stocks, especially in measuring stock's volatiliy.
+
+The Volume chart shows how its stocks are traded on the daily. 
+
+The chartsare usually used to decide whether to buy/sell a stock.
+
+$\textbf{If it falls below the line, it is time to sell. If it rises above the line, it is experiencing an upward momentum.}$
+
+Brief explanation of what head(AMZN/EBAY) gives us:\n
+
+Open is the price of the stock at the beginning of the trading day, high is the highest price of the stock on that trading day, low the lowest price of the stock on that trading day, and close the price of the stock at closing time. Volume indicates how many stocks were traded. Adjusted close is the closing price of the stock that adjusts the price of the stock for corporate actions.
+
+We coclude that Ebay stock does not worth buying in 2018. Amazon stock is was worth buying from May till Oct 2018 (for more details look at charts). What happens in 2019? We consider that the trends will stay the same.
+
+```{r}
+
+#start from 2018-01-01 til 2019
+start <- as.Date("2018-01-01")
+end <- as.Date("2019-10-01")
+
+#getting stock data from yahoo
+getSymbols("EBAY",from=start,to=end, src = "yahoo")
+
+#Ebay's prices chart
+EBAY%>%Ad()%>%chartSeries()
+
+#Bollinger Band chart for Ebay
+EBAY%>%chartSeries(TA='addBBands();addVo();addMACD()',subset='2018')
+
+#getting stock data from yahoo
+getSymbols("AMZN",from=start,to=end, src = "yahoo")
+
+#Amazon's prices chart
+AMZN%>%Ad()%>%chartSeries()
+
+#Bollinger Band chart for Amazon
+AMZN%>%chartSeries(TA='addBBands();addVo();addMACD()',subset='2018')
+
+#get first few rows
+head(AMZN)
+head(EBAY)
+
+```
+
+Another way of vizualization
+
+Financial data is mostly plotted with a Japanese candlestick plot, so named because it was first created by 18th century Japanese rice traders. We applied the function candleChart() from quantmod to create such a chart. Also, Candlestick chats are widely used in technical analysis to make trading decisions.
+
+for more details go here: https://plot.ly/r/candlestick-charts/
+
+This r code gives us two charts all having two candlesticks - blue and red. First one indicates a day where the closing price was higher than the open, another -  day where the open was higher than the close.
+```{r}
+candleChart(AMZN, up.col = "blue", dn.col = "red", theme = "white")
+candleChart(EBAY, up.col = "blue", dn.col = "red", theme = "white")
+```
+
+
+$\textbf{Below, we plot AMZN's and EBAY's adjusted close together.}$
+
+We initialize xts object from quantmod containing stock prices for AMZN and EBAY.
+
+Then, we create a plot using zoo method which allows for multiple series be ploted on the same plot.
+```{r}
+stocks <- as.xts(data.frame(AMZN = AMZN[, "AMZN.Close"], EBAY = EBAY[, "EBAY.Close"]))
+head(stocks)
+
+plot(as.zoo(stocks[, c("AMZN.Close")]))
+par(new = TRUE)
+
+plot(as.zoo(stocks[, "EBAY.Close"]), screens = 1, lty = 3, xaxt = "n", yaxt = "n", 
+    xlab = "", ylab = "")
+
+mtext("Price", side = 4, line = 3)
+
+#adding legend to plot
+legend("topleft", c("AMZN", "EBAY"), lty = 1:3, cex = 0.5)
+```
+
+$\textbf{Part 3.}$ 
+
+$\textbf{Visualization of a Correlation Matrix}$
+
+To successfully purchase a stock, we should take into account correlation (the smaller correlation is, the more bigger is rate of return).
+
+$\textbf{A rule of thumb: do not put all your eggs in one basket!}$
+
+Since, AMZN and EBAY are stocks from different sectrors, therefore the correlation is small.
+
+Investing money in stocks from different sectros minimizes the risk.
+```{r}
+#merging two data frames together
+data<-cbind(diff(log(Cl(EBAY))),diff(log(Cl(AMZN))))
+
+#getting chart with correlation data
+chart.Correlation(data)
+
+```
+
+$\textbf{Amazon and Ebay stocks returns}$
+
+To do that, we need to use apply function which transforms our data into appropriate type.
+We calculate the returns in certain period:
+$return_{t, 0} = \frac{price_t}{price_0}$
+
+The plot shows us the profitability of each stocks. It seen clearly seen in the plot that two stocks are not correlated what we've already shown in previuos section. Amazon stock is much more profitable than Ebay.
+
+In addition, we could also calculate and vizualize stock changes.
+
+$change_t = log(price_t) - log(price_{t - 1})$ t - period of time.
+
+```{r}
+
+#getting stock returns
+stock_returns = apply(stocks, 1, function(x) {x / stocks[1,]}) %>% 
+                                            t %>% as.xts
+
+#getting stock change using diff function
+stock_change = diff(log(stock_returns[, ]))
+
+#heading data
+head(stock_change)
+head(stock_returns)
+
+plot(as.zoo(stock_returns), screens = 1, lty = 1:3, xlab = "Date", ylab = "Return", main = "Amazon and Ebay stock returns")
+
+legend("topleft", c("AMZN", "EBAY"), lty = 1:3, cex = 0.5)
+
+plot(as.zoo(stock_change), screens = 1, lty = 1:3, xlab = "Date", ylab = "Log Difference", main = "Amazon and Ebay stock change")
+
+legend("topleft", c("AMZN", "Ebay"), lty = 1:3, cex = 0.5)
+
+```
+
+$\textbf{Moving Avarages}$
+
+Moving avarages smooth a series and help find trends in stocks. They do not predict price direction, but rather define the current direction. Most moving averages are based on closing prices.
+
+There two types of Moving avarages - Simple and Exponential. Simple one calculates the avarage price over certain periods of time. Exponential - reduce the lag by applying more weight to recent prices.
+
+$MA^q_t = \frac{1}{q}\sum_{i=0}{q - 1}x_{t-i}$
+
+```{r}
+start = as.Date("2018-01-01")
+getSymbols(c("AMZN", "EBAY"), src = "yahoo", from = start, to = end)
+
+candleChart(AMZN, up.col = "black", dn.col = "red", theme = "white", subset = "2018-01-01/", ad)
+#adding MA via addSMA from quantmod
+addSMA(n = 20)
+addEMA(n = 20)
+
+candleChart(EBAY, up.col = "black", dn.col = "red", theme = "white", subset = "2018-01-01/")
+addSMA(n = 20)
+addEMA(n = 20)
+
+```
+
+$\textbf{Part 6}$
+
+Logreturns and vizualization of risk vs reward
+
+We applied plotly to create a visualization of each stock's risk vs reward. 
+
+Risk: standard deviation of log returns.
+
+Reward: mean of log returns.
+
+
+```{r}
+
+#Loads the company stock using ticker
+getSymbols("AMZN",from="2008-08-01",to="2018-08-20")
+getSymbols("EBAY",from="2008-08-01",to="2018-08-20")
+
+#Stock returns in log
+AMZN_log_returns<-AMZN%>%Ad()%>%dailyReturn(type='log')
+EBAY_log_returns<-EBAY%>%Ad()%>%dailyReturn(type='log')
+
+#Mean of log stock returns 
+AMZN_mean_log<-mean(AMZN_log_returns)
+EBAY_mean_log<-mean(EBAY_log_returns)
+
+#standard deviation of log stock returns
+AMZN_sd_log<-sd(AMZN_log_returns)
+EBAY_sd_log<-sd(EBAY_log_returns)
+
+mean_log<-c(AMZN_mean_log,EBAY_mean_log)
+sd_log<-c(AMZN_sd_log,EBAY_sd_log)
+
+#create data frame
+graph1<-data.frame(rbind(c("AMZN",AMZN_mean_log, AMZN_sd_log), c("EBAY",EBAY_mean_log,EBAY_sd_log), stringsAsFactors = FALSE))
+
+graph1<-data.frame(mean_log, sd_log)
+rownames(graph1)<-c("AMZN","EBAY")
+colnames(graph1)<-c("AMZN_log_returns", "EBAY_log_returns")
+
+xlab<-list(title="Reward")
+ylab<-list(title="Risk")
+
+plot_ly(x=graph1[,1],y=graph1[,2],text=rownames(graph1),type='scatter',mode="markers",marker=list(color=c("black","blue")))%>%layout(title="Risk vs Reward",xaxis=xlab,yaxis=ylab)
+
+```
+
+$\textbf{Part 7}$
+
+Random Walk for prices simulation of Amazon stock
+
+The random walk theory suggests that changes in stock prices have the same distribution (normal) and are independent of each other, therefore, the past movement or trend of a stock price or market cannot be used to predict its future movement.
+
+```{r}
+testsim<-rep(NA,500)
+
+#generate random daily exponent increase rate using AMZN's mean and sd log returns
+
+#one year 252 trading days, simulate for 2 years 
+# 2*252 trading days
+
+AMZN_prices<-rep(NA,252*2)
+
+#most recent price
+AMZN_prices[1]<-as.numeric(AMZN$AMZN.Adjusted[length(AMZN$AMZN.Adjusted),])
+
+#start simulating prices
+
+for(i in 2:500){
+  #generates multivariate normal random variates in the space
+  AMZN_prices[i]<-AMZN_prices[i-1]*exp(rnorm(1,AMZN_mean_log,AMZN_sd_log))
+}
+
+#creating a frame
+random_data<-cbind(AMZN_prices,1:(252*2))
+colnames(random_data)<-c("Price","Day")
+random_data<-as.data.frame(random_data)
+
+random_data%>%ggplot(aes(Day,Price))+geom_line()+labs(title="Amazon (AMZN) price simulation for 2 years")+theme_bw()
+
+```
+
+
+
+```{r}
+
+#ending session
+sessionInfo()
+
+```
+
+
+$\textbf{Conclusion:}$
+Investing in stock market is not so easy as it seems to be. The probability of losing money is high, because many investors do not pay attention to risk. But with such tools like Random Walk and Moving Avarage chart, we can avoid risk and invest in stock successfully. Only being familiar with financial analysis rools will help us make right decisions. 
+
+
+References:
+https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:moving_averages
+https://thebusinessprofessor.com/knowledge-base/random-walk-theory-stock-market-explained/
+https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html
+https://towardsdatascience.com/analyzing-stocks-using-r-550be7f5f20d
+https://ntguardian.wordpress.com/2017/04/03/introduction-stock-market-data-r-2/
+https://ntguardian.wordpress.com/2017/03/27/introduction-stock-market-data-r-1/
